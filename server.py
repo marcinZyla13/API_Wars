@@ -1,11 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 
 app = Flask(__name__)
 
 
 @app.route('/')
 def main_page():
-    return "dupa"
+    return render_template("Main_Page.html")
 
 
 
