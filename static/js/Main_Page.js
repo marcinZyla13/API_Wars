@@ -29,9 +29,9 @@ function displayData(data) {
                     <td>${element['diameter']} km</td>
                     <td>${element['climate']}</td>
                     <td>${element['terrain']}</td>\
+                    <td>${element['surface_water']}</td>\
+                    <td>${element['population']}</td>\
                     </tr>`
-
-
     })
     table.innerHTML = row;
 
