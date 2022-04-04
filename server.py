@@ -8,6 +8,13 @@ def main_page():
     return render_template("Main_Page.html")
 
 
+def register():
+    return ""
+
+
+def login():
+    return ""
+
 
 
 if __name__ == "__main__":

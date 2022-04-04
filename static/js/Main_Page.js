@@ -6,7 +6,7 @@ window.onload = function(){
 function collectInformationAboutPlanets()
 {
 
-     fetch("https://swapi.dev/api/planets", {
+    const response = fetch  ("https://swapi.dev/api/planets", {
         method: 'GET',
         headers: {
             'Accept': 'application/json',
@@ -14,7 +14,7 @@ function collectInformationAboutPlanets()
         },
         body: JSON.stringify()
     }).then(response => response.json())
-        .then(data =>displayData(data))
+        .then( data => displayData(data))
 
 
 }
@@ -22,21 +22,18 @@ function collectInformationAboutPlanets()
 function displayData(data) {
     let row;
     let table = document.getElementById('table');
-
+    let counter = 0;
     data['results'].forEach(element => {
-             row += `<tr>
+            row += `<tr>
                     <td>${element['name']}</td>
                     <td>${element['diameter']} km</td>
                     <td>${element['climate']}</td>
                     <td>${element['terrain']}</td>\
                     </tr>`
 
+
     })
     table.innerHTML = row;
-
-
-
-
 
 }
 
