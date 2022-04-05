@@ -33,6 +33,7 @@ function displayData(data) {
                     <td>${element['terrain']}</td>`
                     row+= (element['surface_water'] === 'unknown' ? `<td>${element['surface_water']} </td>` : `<td>${element['surface_water']} %</td>`)
                     row+= (element['population'] === 'unknown' ? `<td>${element['population']} </td>` : `<td>${convertPopulationNumber(element['population'])} people</td>`)
+                    row+= (element['population'] === 'unknown' ? `<td>${element['population']} </td>` : `<td>${element['residents'].length} residents</td>`)
                     row+= `</tr>`
     })
     table.innerHTML = row;
