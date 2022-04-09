@@ -1,15 +1,15 @@
 let amountOfObjects = 0;
 let page = 1;
+let planetObjects;
 
 window.onload = function(){
-    collectInformationFromApi("https://swapi.dev/api/planets","planets");
+    collectInformationAboutPlanets("https://swapi.dev/api/planets");
     addEventListeners();
 }
 
 
-function  collectInformationFromApi(uri,flag)
+function  collectInformationAboutPlanets(uri)
 {
-    let currentPlanet;
     const response = fetch  (uri, {
         method: 'GET',
         headers: {
@@ -18,38 +18,26 @@ function  collectInformationFromApi(uri,flag)
         },
         body: JSON.stringify()
     }).then(response => response.json())
-        .then(function(data){
-            if(flag === "planets")
-            {
-                displayData(data);
-            }
-            else
-            {
-                collectInformationAboutResidents(data['residents']);
-            }
-        });
-
+        .then(data => displayData(data))
 
 
 }
 
-function collectInformationAboutResidents(residents)
-{
-    console.log(residents);
 
-}
-
-function getCurrentPlanet(event)
+function getCurrentResidents(event)
 {
-    collectInformationFromApi(`https://swapi.dev/api/planets/${event.target.id}?page=${event.target.getAttribute('data-page')}`,'residents');
+    let residentsLink = planetObjects[event.currentTarget.id-1]['residents'];
+
+
 }
 
 
 
 function displayData(data) {
     console.log(data);
-    let planetCounter = 0;
+    planetObjects = data['results'];
     amountOfObjects = data.count;
+    let planetCounter = 0;
     let row;
     let table = document.getElementById('table');
     data['results'].forEach(element => {
@@ -60,7 +48,8 @@ function displayData(data) {
                     <td>${element['terrain']}</td>`
                     row+= (element['surface_water'] === 'unknown' ? `<td>${element['surface_water']} </td>` : `<td>${element['surface_water']} %</td>`)
                     row+= (element['population'] === 'unknown' ? `<td>${element['population']} </td>` : `<td>${convertPopulationNumber(element['population'])} people</td>`)
-                    row+= (element['residents'].length === 0 ? `<td id ="${planetCounter+=1}">No residents</td>` : `<td><button data-page='${page}' id ="${planetCounter+=1}"type="button" class="btn btn-outline-primary"> ${element['residents'].length} residents</button></td>`)
+                    row+= (element['residents'].length === 0 ? `<td id ="${planetCounter+=1}">No residents</td>` :
+                        `<td><button data-page='${page}' id ="${planetCounter+=1}" type="button" class="btn btn-outline-primary"> ${element['residents'].length} residents</button></td>`)
                     row+= `</tr>`
     })
     table.innerHTML = row;
@@ -82,13 +71,13 @@ function addEventListeners()
     {
         checkPageAvailability("+");
         uri = `https://swapi.dev/api/planets/?page=${page}`;
-        collectInformationFromApi(uri,"planets");
+        collectInformationAboutPlanets(uri);
     })
     document.getElementById('previous').addEventListener('click',function()  // refactor na query selector ???
     {
         checkPageAvailability("-");
         uri = `https://swapi.dev/api/planets/?page=${page}`;
-        collectInformationFromApi(uri,"planets");
+        collectInformationAboutPlanets(uri);
     })
 
 }
@@ -97,7 +86,7 @@ function addEventListenersToResidentsButtons()
 {
     document.querySelectorAll(".btn.btn-outline-primary").forEach(item => {
         item.addEventListener('click',event => {
-            getCurrentPlanet(event);
+            getCurrentResidents(event);
         })
     })
 
