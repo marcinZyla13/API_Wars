@@ -20,21 +20,60 @@ function  collectInformationAboutPlanets(uri)
     }).then(response => response.json())
         .then(data => displayData(data))
 
-
 }
 
-
-function getCurrentResidents(event)
+function  collectInformationAboutResidents(uri)
 {
-    let residentsLink = planetObjects[event.currentTarget.id-1]['residents'];
-
+    const response =  fetch  (uri, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify()
+    }).then(response => response.json())
+        .then(data => displayResidents(data))
 
 }
 
+function displayResidents(data) {
+    let row;
+    let modalBody = document.getElementById("residentsTable");
+
+    row = `
+        <td class ="modalText">${data['name']}</td>
+        <td class ="modalText">${data['height']}</td>
+        <td class ="modalText">${data['mass']}</td>
+        <td class ="modalText">${data['hair_color']}</td>
+        <td class ="modalText">${data['skin_color']}</td>
+        <td class ="modalText">${data['eye_color']}</td>
+        <td class ="modalText">${data['birth_year']}</td>
+        <td class ="modalText">${data['gender']}</td>        
+       `
+    modalBody.innerHTML += row;
+}
+
+function getResidentsApiAddresses(event)
+{
+
+    $("#myModal").modal();
+    let residentsLink = planetObjects[event.currentTarget.id-1]['residents'];
+    for(let x=0;x<residentsLink.length;x++)
+    {
+        collectInformationAboutResidents(residentsLink[x]);
+    }
+
+}
+
+function ClearModal()
+{
+    let modalTable = document.getElementById('residentsTable');
+    modalTable.innerHTML='';
+
+}
 
 
 function displayData(data) {
-    console.log(data);
     planetObjects = data['results'];
     amountOfObjects = data.count;
     let planetCounter = 0;
@@ -86,7 +125,8 @@ function addEventListenersToResidentsButtons()
 {
     document.querySelectorAll(".btn.btn-outline-primary").forEach(item => {
         item.addEventListener('click',event => {
-            getCurrentResidents(event);
+            ClearModal();
+            getResidentsApiAddresses(event)
         })
     })
 
