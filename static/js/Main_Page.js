@@ -4,7 +4,7 @@ let planetObjects;
 
 window.onload = function(){
     collectInformationAboutPlanets("https://swapi.dev/api/planets");
-    addEventListeners();
+    addEventListenersToMenuButtons();
 }
 
 
@@ -102,7 +102,7 @@ function convertPopulationNumber(population)
     return internationalNumberFormat.format(population);
 }
 
-function addEventListeners()
+function addEventListenersToMenuButtons()
 {
     let uri;
 
@@ -119,7 +119,14 @@ function addEventListeners()
         collectInformationAboutPlanets(uri);
     })
 
+
+    document.querySelectorAll(".btn.btn-secondary.btn-sm").forEach(item => {
+        item.addEventListener('click',event => {
+            generateModal(event.currentTarget.id);
+        })
+    })
 }
+
 
 function addEventListenersToResidentsButtons()
 {
@@ -150,6 +157,33 @@ function checkPageAvailability(operation)
 }
 
 
+function generateModal(modalType)
+{
 
+    let registerLoginModalContent = document.getElementById("loginRegisterContent");
+    let row =`<form id ="form">
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Password</label>
+            <input type="password" class="form-control" id="exampleInputPassword1">
+          </div>`
+    if(modalType === "register")
+    {
+            row += `<div class="mb-3">
+                    <label for="passwordConfirmation" class="form-label">Confirm password</label>
+                    <input type="password" class="form-control" id="passwordConfirmation">
+                    </div>`
+
+    }
+    row +=` </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+             </form>`;
+    registerLoginModalContent.innerHTML = row;
+    $("#loginRegister").modal();
+
+}
 
 
