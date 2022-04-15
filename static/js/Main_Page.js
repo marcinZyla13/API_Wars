@@ -22,6 +22,69 @@ function  collectInformationAboutPlanets(uri)
 
 }
 
+function displayData(data) {
+    planetObjects = data['results'];
+    amountOfObjects = data.count;
+    let planetCounter = 0;
+    let row;
+    let table = document.getElementById('table');
+    data['results'].forEach(element => {
+            row += `<tr>
+                    <td>${element['name']}</td>
+                    <td>${element['diameter']} km</td>
+                    <td>${element['climate']}</td>
+                    <td>${element['terrain']}</td>`
+                    row+= (element['surface_water'] === 'unknown' ? `<td>${element['surface_water']} </td>` : `<td>${element['surface_water']} %</td>`)
+                    row+= (element['population'] === 'unknown' ? `<td>${element['population']} </td>` : `<td>${convertPopulationNumber(element['population'])} people</td>`)
+                    row+= (element['residents'].length === 0 ? `<td id ="${planetCounter+=1}">No residents</td>` :
+                        `<td><button data-page='${page}' id ="${planetCounter+=1}" type="button" class="btn btn-outline-primary"> ${element['residents'].length} residents</button></td>`)
+                    row+= `</tr>`
+    })
+    table.innerHTML = row;
+    addEventListenersToResidentsButtons()
+
+}
+
+function convertPopulationNumber(population)
+{
+    let internationalNumberFormat = new Intl.NumberFormat('en-US')
+    return internationalNumberFormat.format(population);
+}
+
+
+
+function addEventListenersToResidentsButtons()
+{
+    document.querySelectorAll(".btn.btn-outline-primary").forEach(item => {
+        item.addEventListener('click',event => {
+            ClearModal();
+            getResidentsApiAddresses(event)
+        })
+    })
+
+}
+
+function ClearModal()
+{
+    let modalTable = document.getElementById('residentsTable');
+    modalTable.innerHTML='';
+
+}
+
+function getResidentsApiAddresses(event)
+{
+
+    $("#myModal").modal();
+    let residentsLink = planetObjects[event.currentTarget.id-1]['residents'];
+    for(let x=0;x<residentsLink.length;x++)
+    {
+        collectInformationAboutResidents(residentsLink[x]);
+    }
+
+}
+
+
+
 function  collectInformationAboutResidents(uri)
 {
     const response =  fetch  (uri, {
@@ -53,54 +116,6 @@ function displayResidents(data) {
     modalBody.innerHTML += row;
 }
 
-function getResidentsApiAddresses(event)
-{
-
-    $("#myModal").modal();
-    let residentsLink = planetObjects[event.currentTarget.id-1]['residents'];
-    for(let x=0;x<residentsLink.length;x++)
-    {
-        collectInformationAboutResidents(residentsLink[x]);
-    }
-
-}
-
-function ClearModal()
-{
-    let modalTable = document.getElementById('residentsTable');
-    modalTable.innerHTML='';
-
-}
-
-
-function displayData(data) {
-    planetObjects = data['results'];
-    amountOfObjects = data.count;
-    let planetCounter = 0;
-    let row;
-    let table = document.getElementById('table');
-    data['results'].forEach(element => {
-            row += `<tr>
-                    <td>${element['name']}</td>
-                    <td>${element['diameter']} km</td>
-                    <td>${element['climate']}</td>
-                    <td>${element['terrain']}</td>`
-                    row+= (element['surface_water'] === 'unknown' ? `<td>${element['surface_water']} </td>` : `<td>${element['surface_water']} %</td>`)
-                    row+= (element['population'] === 'unknown' ? `<td>${element['population']} </td>` : `<td>${convertPopulationNumber(element['population'])} people</td>`)
-                    row+= (element['residents'].length === 0 ? `<td id ="${planetCounter+=1}">No residents</td>` :
-                        `<td><button data-page='${page}' id ="${planetCounter+=1}" type="button" class="btn btn-outline-primary"> ${element['residents'].length} residents</button></td>`)
-                    row+= `</tr>`
-    })
-    table.innerHTML = row;
-    addEventListenersToResidentsButtons()
-
-}
-
-function convertPopulationNumber(population)
-{
-    let internationalNumberFormat = new Intl.NumberFormat('en-US')
-    return internationalNumberFormat.format(population);
-}
 
 function addEventListenersToMenuButtons()
 {
@@ -127,6 +142,56 @@ function addEventListenersToMenuButtons()
     })
 }
 
+function checkPageAvailability(operation)
+{
+    let objectsOnThePage = 10;
+    let maxAmountOfPages = amountOfObjects/objectsOnThePage;
+    if(operation === "-")
+    {
+        if(page - 1 >=1)
+            page-=1;
+    }
+    else
+    {
+        if(page + 1 <= maxAmountOfPages)
+            page+=1;
+    }
+
+}
+
+
+
+function generatePasswordOrLoginModal(modalType)
+{
+
+    let registerLoginModalContent = document.getElementById("loginRegisterContent");
+    let row =`<form id ="form">
+          <div class="mb-3">
+            <label  for="exampleInputEmail1" class="form-label">Email address</label>
+            <input  type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password">
+          </div>`
+    if(modalType === "register")
+    {
+            row += `<div class="mb-3">
+                    <label for="passwordConfirmation" class="form-label">Confirm password</label>
+                    <input type="password" class="form-control" id="passwordConfirmation">
+                    </div>`
+
+    }
+    row +=` </div>
+            <button id="submitButton" type="button" class="btn btn-primary">Submit</button>
+             </form>`;
+    registerLoginModalContent.innerHTML = row;
+    $("#loginRegister").modal();
+
+}
+
+
+
 function addEventListenerToSendingFormButton(currentButton)
 {
     document.getElementById('submitButton').addEventListener('click',event =>{
@@ -135,6 +200,7 @@ function addEventListenerToSendingFormButton(currentButton)
 
 
 }
+
 
 function collectDataFromForm(currentButton)
 {
@@ -201,62 +267,10 @@ function sendUserRequestToDataBase(uri)
 }
 
 
-function addEventListenersToResidentsButtons()
-{
-    document.querySelectorAll(".btn.btn-outline-primary").forEach(item => {
-        item.addEventListener('click',event => {
-            ClearModal();
-            getResidentsApiAddresses(event)
-        })
-    })
-
-}
-
-function checkPageAvailability(operation)
-{
-    let objectsOnThePage = 10;
-    let maxAmountOfPages = amountOfObjects/objectsOnThePage;
-    if(operation === "-")
-    {
-        if(page - 1 >=1)
-            page-=1;
-    }
-    else
-    {
-        if(page + 1 <= maxAmountOfPages)
-            page+=1;
-    }
-
-}
 
 
-function generatePasswordOrLoginModal(modalType)
-{
 
-    let registerLoginModalContent = document.getElementById("loginRegisterContent");
-    let row =`<form id ="form">
-          <div class="mb-3">
-            <label  for="exampleInputEmail1" class="form-label">Email address</label>
-            <input  type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-          </div>
-          <div class="mb-3">
-            <label for="exampleInputPassword1" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password">
-          </div>`
-    if(modalType === "register")
-    {
-            row += `<div class="mb-3">
-                    <label for="passwordConfirmation" class="form-label">Confirm password</label>
-                    <input type="password" class="form-control" id="passwordConfirmation">
-                    </div>`
 
-    }
-    row +=` </div>
-            <button id="submitButton" type="button" class="btn btn-primary">Submit</button>
-             </form>`;
-    registerLoginModalContent.innerHTML = row;
-    $("#loginRegister").modal();
 
-}
 
 
