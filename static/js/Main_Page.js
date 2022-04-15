@@ -119,12 +119,85 @@ function addEventListenersToMenuButtons()
         collectInformationAboutPlanets(uri);
     })
 
-
     document.querySelectorAll(".btn.btn-secondary.btn-sm").forEach(item => {
         item.addEventListener('click',event => {
-            generateModal(event.currentTarget.id);
+            generatePasswordOrLoginModal(event.currentTarget.id);
+            addEventListenerToSendingFormButton(event.currentTarget.id)
         })
     })
+}
+
+function addEventListenerToSendingFormButton(currentButton)
+{
+    document.getElementById('submitButton').addEventListener('click',event =>{
+        collectDataFromForm(currentButton);
+    })
+
+
+}
+
+function collectDataFromForm(currentButton)
+{
+    let data_package = {
+        'email' : document.getElementById('exampleInputEmail1').value,
+        'password' : document.getElementById('password').value,
+    }
+    if(currentButton === 'register')
+    {
+        data_package['passwordConfirmation'] = document.getElementById('passwordConfirmation').value;
+        validateDataFromForm(data_package,'register');
+    }
+    validateDataFromForm(data_package,'login');
+
+}
+
+
+
+function validateDataFromForm(data_package,flag)
+{
+    if(data_package['email'].length < 6)
+    {
+        alert("Sorry but Your email its too short");
+        return false;
+    }
+
+    if(!data_package['email'].includes('@'))
+    {
+        alert("Sorry but Your email is not correct ( @ ) is missing");
+        return false;
+    }
+
+    if(data_package['password'].length < 8)
+    {
+        alert("Your password is too short, minimum 8 signs");
+        return false;
+    }
+
+    if(flag === 'register' && data_package['password'] !== data_package['confirmPassword'])
+    {
+        alert("Passwords are not the same")
+        return false;
+    }
+
+    let uri = flag === 'login'? '/login': '/register';
+    sendUserRequestToDataBase(uri);
+
+
+
+}
+
+function sendUserRequestToDataBase(uri)
+{
+    const response = fetch  (uri, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify()
+    }).then(response => response.json())
+        .then(data => console.log(data))
+
 }
 
 
@@ -157,18 +230,18 @@ function checkPageAvailability(operation)
 }
 
 
-function generateModal(modalType)
+function generatePasswordOrLoginModal(modalType)
 {
 
     let registerLoginModalContent = document.getElementById("loginRegisterContent");
     let row =`<form id ="form">
           <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Email address</label>
-            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            <label  for="exampleInputEmail1" class="form-label">Email address</label>
+            <input  type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
           </div>
           <div class="mb-3">
             <label for="exampleInputPassword1" class="form-label">Password</label>
-            <input type="password" class="form-control" id="exampleInputPassword1">
+            <input type="password" class="form-control" id="password">
           </div>`
     if(modalType === "register")
     {
@@ -179,7 +252,7 @@ function generateModal(modalType)
 
     }
     row +=` </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button id="submitButton" type="button" class="btn btn-primary">Submit</button>
              </form>`;
     registerLoginModalContent.innerHTML = row;
     $("#loginRegister").modal();

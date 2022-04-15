@@ -5,16 +5,19 @@ app = Flask(__name__)
 
 @app.route('/')
 def main_page():
-    return render_template("main_page.html")
+    return render_template("Main_Page.html")
 
 
+@app.route('/register')
 def register():
+    print("register")
     return ""
 
 
+@app.route('/login')
 def login():
+    print("Login")
     return ""
-
 
 
 if __name__ == "__main__":
