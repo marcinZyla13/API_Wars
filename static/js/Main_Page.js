@@ -213,7 +213,8 @@ function collectDataFromForm(currentButton)
         data_package['passwordConfirmation'] = document.getElementById('passwordConfirmation').value;
         validateDataFromForm(data_package,'register');
     }
-    validateDataFromForm(data_package,'login');
+    else
+        validateDataFromForm(data_package,'login');
 
 }
 
@@ -221,48 +222,48 @@ function collectDataFromForm(currentButton)
 
 function validateDataFromForm(data_package,flag)
 {
-    if(data_package['email'].length < 6)
-    {
-        alert("Sorry but Your email its too short");
-        return false;
-    }
+    // if(data_package['email'].length < 6)
+    // {
+    //     alert("Sorry but Your email its too short");
+    //     return false;
+    // }
+    //
+    // if(!data_package['email'].includes('@'))
+    // {
+    //     alert("Sorry but Your email is not correct ( @ ) is missing");
+    //     return false;
+    // }
+    //
+    // if(data_package['password'].length < 8)
+    // {
+    //     alert("Your password is too short, minimum 8 signs");
+    //     return false;
+    // }
+    //
+    // if(flag === 'register' && data_package['password'] !== data_package['passwordConfirmation'])
+    // {
+    //     alert("Passwords are not the same")
+    //     return false;
+    // }
 
-    if(!data_package['email'].includes('@'))
-    {
-        alert("Sorry but Your email is not correct ( @ ) is missing");
-        return false;
-    }
-
-    if(data_package['password'].length < 8)
-    {
-        alert("Your password is too short, minimum 8 signs");
-        return false;
-    }
-
-    if(flag === 'register' && data_package['password'] !== data_package['confirmPassword'])
-    {
-        alert("Passwords are not the same")
-        return false;
-    }
-
-    let uri = flag === 'login'? '/login': '/register';
-    sendUserRequestToDataBase(uri);
+    let uri = flag === 'login'? '/login' : '/register';
+    sendUserRequestToDataBase(uri,data_package);
 
 
 
 }
 
-function sendUserRequestToDataBase(uri)
+function sendUserRequestToDataBase(uri,data_package)
 {
     const response = fetch  (uri, {
-        method: 'GET',
+        method: 'POST',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify()
+        body: JSON.stringify(data_package)
     }).then(response => response.json())
-        .then(data => console.log(data))
+        .then(data => data)
 
 }
 

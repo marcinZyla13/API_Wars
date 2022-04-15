@@ -1,0 +1,17 @@
+DROP TABLE IF EXISTS public."votes";
+DROP TABLE IF EXISTS public."userInformation";
+
+CREATE TABLE userInformation(
+    user_id int NOT NULL ,
+    email varchar(100) NOT NULL,
+    password varchar(100) NOT NULL,
+    PRIMARY KEY (user_id)
+);
+
+
+CREATE TABLE votes(
+    vote_id int NOT NULL ,
+    planet_name varchar(30),
+    user_id int NOT NULL
+    PRIMARY KEY (vote_id)
+);
