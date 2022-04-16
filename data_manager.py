@@ -2,11 +2,22 @@ import connection
 
 
 @connection.connection_handler
-def add_user(cursor,email,password):
+def add_user(cursor, email, password):
     query = """
-    INSERT INTO userinformation(user_id,password)
-      
+    INSERT INTO userinformation(email,password)
+    VALUES (%(email)s,%(password)s)      
     """
+    arguments = {'email': email, 'password': password}
+    cursor.execute(query, arguments)
 
-    cursor.execute(query)
-    return cursor.fetchall()
+
+@connection.connection_handler
+def get_user(cursor, email):
+    query = """
+    SELECT email,password FROM userinformation
+    WHERE email = %(email)s
+
+    """
+    arguments = {'email': email}
+    cursor.execute(query, arguments)
+    return cursor.fetchone()

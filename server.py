@@ -1,6 +1,5 @@
 from flask import Flask, render_template, session, request, redirect, jsonify
 import utils
-import data_manager
 
 app = Flask(__name__)
 app.secret_key = "NotVeryComplicatedTestKey"
@@ -14,24 +13,24 @@ def main_page():
 @app.route('/register', methods=['POST'])
 def register():
     try:
-        user = request.json
-        if utils.compare_passwords(user['password'], user['passwordConfirmation']):
-            jsonify({"status": 409})
-        if utils.check_if_user_in_database(user['email']):
-            jsonify({"status": 409})
-    except :
-        jsonify({"status": 400})
+        if utils.register_user_if_possible(request.json):
+            return jsonify({"status": 200})
+        else:
+            return jsonify({"status": 409})
+    except:
+        return jsonify({"status": 400})
+
 
 
 @app.route('/login', methods=['POST'])
 def login():
-    try:
+    if utils.compare_input_with_user_in_database(request.json):
         session['id'] = "coś z bazy"
         session['email'] = "coś z bazy"
-        jsonify({"status": 200})
-    except :
-        jsonify({"status": 400})
-
+        print('yes')
+        return jsonify({"status": 200})
+    print('not')
+    return jsonify({"status": 400})
 
 
 @app.route("/logout")
