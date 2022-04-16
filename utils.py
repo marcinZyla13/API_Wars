@@ -27,9 +27,9 @@ def register_user_if_possible(input_form):
 
 def compare_input_with_user_in_database(input_form):
     user = data_manager.get_user(input_form['email'])
-    if user:
+    if user is not None:
         if verify_password(input_form['password'], user['password']):
-            return True
+            return user['email']
         return False
     else:
         return False

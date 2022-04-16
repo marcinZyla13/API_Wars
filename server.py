@@ -21,22 +21,27 @@ def register():
         return jsonify({"status": 400})
 
 
-
 @app.route('/login', methods=['POST'])
 def login():
-    if utils.compare_input_with_user_in_database(request.json):
-        session['id'] = "coś z bazy"
-        session['email'] = "coś z bazy"
-        print('yes')
-        return jsonify({"status": 200})
-    print('not')
-    return jsonify({"status": 400})
+    try:
+        user = utils.compare_input_with_user_in_database(request.json)
+        if user:
+            session['user'] = user
+            return jsonify({"status": 200})
+        return jsonify({"status": 401})
+    except:
+        return jsonify({"status": 400})
 
 
-@app.route("/logout")
+@app.route('/vote', methods=['POST'])
+def vote():
+    print(request.json)
+    return jsonify({"status": 200})
+
+
+@app.route("/logout", methods=['GET'])
 def logout():
-    session.pop("id", None)
-    session.pop("email", None)
+    session.pop("user", None)
     return redirect('/')
 
 

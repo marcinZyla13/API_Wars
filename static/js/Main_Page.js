@@ -38,10 +38,12 @@ function displayData(data) {
                     row+= (element['population'] === 'unknown' ? `<td>${element['population']} </td>` : `<td>${convertPopulationNumber(element['population'])} people</td>`)
                     row+= (element['residents'].length === 0 ? `<td id ="${planetCounter+=1}">No residents</td>` :
                         `<td><button data-page='${page}' id ="${planetCounter+=1}" type="button" class="btn btn-outline-primary"> ${element['residents'].length} residents</button></td>`)
+                    row+= `<td><button id = "${element['name']}" type="button" class="btn btn-outline-warning">Vote</button></td>`
                     row+= `</tr>`
     })
     table.innerHTML = row;
     addEventListenersToResidentsButtons()
+    addEventListenersToVoteButtons()
 
 }
 
@@ -59,6 +61,21 @@ function addEventListenersToResidentsButtons()
         item.addEventListener('click',event => {
             ClearModal();
             getResidentsApiAddresses(event)
+        })
+    })
+
+}
+
+function addEventListenersToVoteButtons()
+{
+    document.querySelectorAll(".btn.btn-outline-warning").forEach(item => {
+        item.addEventListener('click',event => {
+            let data_package ={
+                "user_id" : document.getElementById('user_name').textContent,
+                "planet_name" : event.currentTarget.id
+            }
+            sendUserRequestToDataBase("/vote",data_package)
+
         })
     })
 
@@ -121,13 +138,13 @@ function addEventListenersToMenuButtons()
 {
     let uri;
 
-    document.getElementById('next').addEventListener('click',function()  // refactor na query selector ???
+    document.getElementById('next').addEventListener('click',function()
     {
         checkPageAvailability("+");
         uri = `https://swapi.dev/api/planets/?page=${page}`;
         collectInformationAboutPlanets(uri);
     })
-    document.getElementById('previous').addEventListener('click',function()  // refactor na query selector ???
+    document.getElementById('previous').addEventListener('click',function()
     {
         checkPageAvailability("-");
         uri = `https://swapi.dev/api/planets/?page=${page}`;
@@ -234,9 +251,9 @@ function validateDataFromForm(data_package,flag)
     //     return false;
     // }
     //
-    // if(data_package['password'].length < 8)
+    // if(data_package['password'].length < 6)
     // {
-    //     alert("Your password is too short, minimum 8 signs");
+    //     alert("Your password is too short, minimum 6 signs");
     //     return false;
     // }
     //

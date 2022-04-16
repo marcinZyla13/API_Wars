@@ -14,7 +14,7 @@ def add_user(cursor, email, password):
 @connection.connection_handler
 def get_user(cursor, email):
     query = """
-    SELECT email,password FROM userinformation
+    SELECT user_id,email,password FROM userinformation
     WHERE email = %(email)s
 
     """

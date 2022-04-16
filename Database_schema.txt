@@ -1,17 +1,26 @@
 DROP TABLE IF EXISTS public."votes";
 DROP TABLE IF EXISTS public."userInformation";
 
-CREATE TABLE userInformation(
-    user_id int NOT NULL ,
-    email varchar(100) NOT NULL,
-    password varchar(100) NOT NULL,
-    PRIMARY KEY (user_id)
+create table if not exists userinformation
+(
+	user_id serial not null
+		constraint userinformation_pkey
+			primary key,
+	email varchar(100) not null,
+	password varchar(100) not null
 );
 
+alter table userinformation owner to postgres;
 
-CREATE TABLE votes(
-    vote_id int NOT NULL ,
-    planet_name varchar(30),
-    user_id int NOT NULL
-    PRIMARY KEY (vote_id)
+create table if not exists votes
+(
+	vote_id integer not null
+		constraint votes_pk
+			primary key,
+	planet_name varchar(30),
+	user_id integer not null
 );
+
+alter table votes owner to postgres;
+
+
