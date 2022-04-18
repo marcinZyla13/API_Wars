@@ -13,3 +13,17 @@ Web application that shows data about the Star Wars universe, stores visitor pre
 - Use simple queries in SQL.
 - session handling.
 - Store passwords.
+
+
+## Technologies :
+- Python
+- Flask
+- PostgreSQL
+- Bootstrap
+- JavaScript
+- CSS
+- Jinja
+
+
+## Additional Informations :
+Database required - schema is contained in the files
