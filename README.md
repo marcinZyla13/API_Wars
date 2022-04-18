@@ -22,6 +22,7 @@ Web application that shows data about the Star Wars universe, stores visitor pre
 - Bootstrap
 - JavaScript
 - CSS
+- HTML
 - Jinja
 
 
