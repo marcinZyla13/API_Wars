@@ -161,7 +161,8 @@ function addEventListenersToMenuButtons()
         item.addEventListener('click',event => {
             if(event.currentTarget.id === "logout")
             {
-                logout();
+                let data ={}
+                sendUserRequestToDataBase('/logout',null)
             }
             else{
                 generatePasswordOrLoginModal(event.currentTarget.id);
@@ -295,28 +296,32 @@ function sendUserRequestToDataBase(uri,data_package)
         },
         body: JSON.stringify(data_package)
     }).then(response => response.json())
-        .then(data => data)
+        .then(data => reactOnServerResponse(data.status,data))
+
 
 }
 
-function logout()
-{
-    const response = fetch  ('/logout', {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-    }).then(data => reactOnServerResponse(data.status))
 
-}
-
-function reactOnServerResponse(response_status)
+function reactOnServerResponse(response_status,data)
 {
-    if(response_status === 200)
+
+    if(response_status === 200 && data['data'] === "logout" || response_status === 200 && data['data'] === "login")
     {
-        document.getElementById('user_name').innerText
+        window.location.href = '/';
     }
+    else if(response_status === 401  && data['data'] === "login")
+    {
+        alert("Unauthorized access attempt");
+    }
+    else if(response_status === 401 && data['data'] === "vote")
+    {
+        alert("You need to be logged to vote");
+    }
+    else if(response_status === 400)
+    {
+        alert("Something went wrong , try again letter");
+    }
+
 }
 
 

@@ -17,13 +17,11 @@
 <button id="next" type="button"  class="btn btn-primary btn-sm">Next</button>
 <button id="statistics" type="button" class="btn btn-warning btn-sm">Voting statistics</button>
 {% if "user" in session %}
-    <button id="logout" type="button" class="btn btn-secondary btn-sm">Logout</button>
+    <a href="/" id="logout" type="button" class="btn btn-secondary btn-sm"> Logout</a>
 {% else %}
     <button id="register" type="button" class="btn btn-secondary btn-sm">Register</button>
     <button id="login" type="button" class="btn btn-secondary btn-sm">Login</button>
 {% endif %}
-
-
 
 <body>
 
