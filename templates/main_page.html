@@ -9,14 +9,19 @@
 
 </head>
 <h1>Star Wars Universe Planets</h1>
-<h1 id="user_name">{{session.user}}</h1>
+<h5 id = "user_name"> Welcome {{session.user}} :)</h5>
+
 
 
 <button id="previous" type="button"  class="btn btn-primary btn-sm">Previous</button>
 <button id="next" type="button"  class="btn btn-primary btn-sm">Next</button>
 <button id="statistics" type="button" class="btn btn-warning btn-sm">Voting statistics</button>
-<button id="login" type="button" class="btn btn-secondary btn-sm">Login</button>
-<button id="register" type="button" class="btn btn-secondary btn-sm">Register</button>
+{% if "user" in session %}
+    <button id="logout" type="button" class="btn btn-secondary btn-sm">Logout</button>
+{% else %}
+    <button id="register" type="button" class="btn btn-secondary btn-sm">Register</button>
+    <button id="login" type="button" class="btn btn-secondary btn-sm">Login</button>
+{% endif %}
 
 
 

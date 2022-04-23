@@ -70,11 +70,17 @@ function addEventListenersToVoteButtons()
 {
     document.querySelectorAll(".btn.btn-outline-warning").forEach(item => {
         item.addEventListener('click',event => {
-            let data_package ={
+            if(document.getElementById('user_name').textContent.length <= 12)
+                alert("You must be logged in to vote");
+            else{
+                let data_package ={
                 "user_id" : document.getElementById('user_name').textContent,
-                "planet_name" : event.currentTarget.id
-            }
+                "planet_name" : event.currentTarget.id }
+
             sendUserRequestToDataBase("/vote",data_package)
+
+            }
+
 
         })
     })
@@ -153,8 +159,15 @@ function addEventListenersToMenuButtons()
 
     document.querySelectorAll(".btn.btn-secondary.btn-sm").forEach(item => {
         item.addEventListener('click',event => {
-            generatePasswordOrLoginModal(event.currentTarget.id);
-            addEventListenerToSendingFormButton(event.currentTarget.id)
+            if(event.currentTarget.id === "logout")
+            {
+                logout();
+            }
+            else{
+                generatePasswordOrLoginModal(event.currentTarget.id);
+                addEventListenerToSendingFormButton(event.currentTarget.id)
+            }
+
         })
     })
 }
@@ -213,10 +226,12 @@ function addEventListenerToSendingFormButton(currentButton)
 {
     document.getElementById('submitButton').addEventListener('click',event =>{
         collectDataFromForm(currentButton);
+        $("#loginRegister").modal('hide');
     })
 
 
 }
+
 
 
 function collectDataFromForm(currentButton)
@@ -282,6 +297,26 @@ function sendUserRequestToDataBase(uri,data_package)
     }).then(response => response.json())
         .then(data => data)
 
+}
+
+function logout()
+{
+    const response = fetch  ('/logout', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+    }).then(data => reactOnServerResponse(data.status))
+
+}
+
+function reactOnServerResponse(response_status)
+{
+    if(response_status === 200)
+    {
+        document.getElementById('user_name').innerText
+    }
 }
 
 

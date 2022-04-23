@@ -27,7 +27,7 @@ def login():
         user = utils.compare_input_with_user_in_database(request.json)
         if user:
             session['user'] = user
-            return jsonify({"status": 200})
+            return render_template("a.html")
         return jsonify({"status": 401})
     except:
         return jsonify({"status": 400})
@@ -39,10 +39,10 @@ def vote():
     return jsonify({"status": 200})
 
 
-@app.route("/logout", methods=['GET'])
+@app.route('/logout', methods=['GET'])
 def logout():
     session.pop("user", None)
-    return redirect('/')
+    return render_template("a.html")
 
 
 if __name__ == "__main__":
