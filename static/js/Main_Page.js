@@ -70,18 +70,16 @@ function addEventListenersToVoteButtons()
 {
     document.querySelectorAll(".btn.btn-outline-warning").forEach(item => {
         item.addEventListener('click',event => {
-            if(document.getElementById('user_name').textContent.length <= 12)
+            if(!document.getElementById('user_name').getAttribute("data-user"))
                 alert("You must be logged in to vote");
             else{
                 let data_package ={
-                "user_id" : document.getElementById('user_name').textContent,
+                "email" : document.getElementById('user_name').getAttribute("data-user"),
                 "planet_name" : event.currentTarget.id }
 
             sendUserRequestToDataBase("/vote",data_package)
 
             }
-
-
         })
     })
 
@@ -161,7 +159,6 @@ function addEventListenersToMenuButtons()
         item.addEventListener('click',event => {
             if(event.currentTarget.id === "logout")
             {
-                let data ={}
                 sendUserRequestToDataBase('/logout',null)
             }
             else{
@@ -316,6 +313,10 @@ function reactOnServerResponse(response_status,data)
     else if(response_status === 401 && data['data'] === "vote")
     {
         alert("You need to be logged to vote");
+    }
+    else if(response_status === 409 && data['data'] === "vote")
+    {
+        alert("You can not vote twice to the same planet");
     }
     else if(response_status === 400)
     {

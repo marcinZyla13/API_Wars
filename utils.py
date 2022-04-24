@@ -37,3 +37,15 @@ def compare_input_with_user_in_database(input_form):
 
 def check_if_user_already_exist(email):
     return data_manager.get_user(email)
+
+
+def vote_if_possible(email, planet_name):
+    user = data_manager.get_user(email)
+    if user:
+        if data_manager.check_if_user_voted(user['user_id'], planet_name):
+            return 409
+        else:
+            data_manager.vote(user['user_id'], planet_name)
+            return 200
+    else:
+        return 401

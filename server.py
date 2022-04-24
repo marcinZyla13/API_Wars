@@ -33,17 +33,21 @@ def login():
         return jsonify({"status": 400, "data": "login"})
 
 
-@app.route('/vote', methods=['POST'])
-def vote():
-    print(request.json)
-    return jsonify({"status": 200,  "data": "vote"})
-
-
 @app.route('/logout', methods=['POST', 'GET'])
 def logout():
     session.pop("user", None)
-    print('dupa')
     return jsonify({"status": 200, "data": "logout"})
+
+
+
+@app.route('/vote', methods=['POST'])
+def vote():
+    try:
+        response = utils.vote_if_possible(request.json['email'], request.json['planet_name'])
+        return jsonify({"status": response, "data": "vote"})
+    except:
+        return jsonify({"status": 400, "data": "vote"})
+
 
 
 if __name__ == "__main__":
