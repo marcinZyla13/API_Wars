@@ -1,10 +1,13 @@
 let amountOfObjects = 0;
 let page = 1;
 let planetObjects;
+let currentVoteStats;
 
 window.onload = function(){
     collectInformationAboutPlanets("https://swapi.dev/api/planets");
     addEventListenersToMenuButtons();
+    addEventListenersToCloseButtons();
+
 }
 
 
@@ -66,6 +69,24 @@ function addEventListenersToResidentsButtons()
 
 }
 
+function addEventListenersToCloseButtons()
+{
+    document.querySelectorAll(".btn.btn-secondary").forEach(item => {
+        item.addEventListener('click',event => {
+                if(event.currentTarget.id === "closeStats")
+                {
+                    $("#statisticsModal").modal('hide');
+                }
+                else
+                {
+                    $("#myModal").modal('hide');
+                }
+        })
+    })
+
+}
+
+
 function addEventListenersToVoteButtons()
 {
     document.querySelectorAll(".btn.btn-outline-warning").forEach(item => {
@@ -105,7 +126,6 @@ function getResidentsApiAddresses(event)
 }
 
 
-
 function  collectInformationAboutResidents(uri)
 {
     const response =  fetch  (uri, {
@@ -132,7 +152,7 @@ function displayResidents(data) {
         <td class ="modalText">${data['skin_color']}</td>
         <td class ="modalText">${data['eye_color']}</td>
         <td class ="modalText">${data['birth_year']}</td>
-        <td class ="modalText">${data['gender']}</td>        
+        <td class ="modalText">${data['gender']}</td>      
        `
     modalBody.innerHTML += row;
 }
@@ -168,6 +188,12 @@ function addEventListenersToMenuButtons()
 
         })
     })
+
+    document.getElementById('statistics').addEventListener('click',function()
+    {
+        sendUserRequestToDataBase('/statistics',null);
+    })
+
 }
 
 function checkPageAvailability(operation)
@@ -227,9 +253,7 @@ function addEventListenerToSendingFormButton(currentButton)
         $("#loginRegister").modal('hide');
     })
 
-
 }
-
 
 
 function collectDataFromForm(currentButton)
@@ -279,8 +303,6 @@ function validateDataFromForm(data_package,flag)
     let uri = flag === 'login'? '/login' : '/register';
     sendUserRequestToDataBase(uri,data_package);
 
-
-
 }
 
 function sendUserRequestToDataBase(uri,data_package)
@@ -298,11 +320,24 @@ function sendUserRequestToDataBase(uri,data_package)
 
 }
 
+function displayStatistics()
+{
+    let row;
+    currentVoteStats.forEach(element => {
+            row += `<tr>
+                    <td>${element['planet_name']}</td>
+                    <td>${element['count']}</td>
+                    </tr>`
+                })
+    document.getElementById('stats').innerHTML = row;
+    $("#statisticsModal").modal();
+
+}
+
 
 function reactOnServerResponse(response_status,data)
 {
-
-    if(response_status === 200 && data['data'] === "logout" || response_status === 200 && data['data'] === "login")
+    if(response_status === 200 && data['data'] === "login")
     {
         window.location.href = '/';
     }
@@ -321,6 +356,11 @@ function reactOnServerResponse(response_status,data)
     else if(response_status === 400)
     {
         alert("Something went wrong , try again letter");
+    }
+    else if(data[0]['status'] === 200 && data[0]['data'] === "statistics")
+    {
+        currentVoteStats = data[1];
+        displayStatistics();
     }
 
 }

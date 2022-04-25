@@ -14,7 +14,7 @@ alter table userinformation owner to postgres;
 
 create table if not exists votes
 (
-	vote_id integer not null
+	vote_id serial not null
 		constraint votes_pk
 			primary key,
 	planet_name varchar(30),

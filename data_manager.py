@@ -23,7 +23,6 @@ def get_user(cursor, email):
     return cursor.fetchone()
 
 
-
 @connection.connection_handler
 def vote(cursor, user_id, planet_name):
     query = """
@@ -32,7 +31,6 @@ def vote(cursor, user_id, planet_name):
     """
     arguments = {'user_id': user_id, 'planet_name': planet_name}
     cursor.execute(query, arguments)
-
 
 
 @connection.connection_handler
@@ -45,3 +43,12 @@ def check_if_user_voted(cursor, user_id, planet_name):
     cursor.execute(query, arguments)
     return cursor.fetchone()
 
+
+@connection.connection_handler
+def get_all_votes(cursor):
+    query = """
+            SELECT planet_name,count(planet_name) FROM votes
+            GROUP BY planet_name
+    """
+    cursor.execute(query)
+    return cursor.fetchall()
